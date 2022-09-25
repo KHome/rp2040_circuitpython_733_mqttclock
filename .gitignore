@@ -1,0 +1,2 @@
+# exclude everything except directory 
+/lib/secrets.py
