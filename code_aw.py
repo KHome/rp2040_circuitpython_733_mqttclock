@@ -36,7 +36,7 @@
 #
 # sdcard = sdcardio.SDCard(spi, cs)
 #
-# audio = audiobusio.I2SOut(board.GP0, board.GP1, board.GP6)
+#  = audiobusio.I2SOut(board.GP0, board.GP1, board.GP6)
 ####################
 # Module L
 # InnerHexagon NEOPIXEL = board.GP22 #NEOPIXEL
@@ -174,10 +174,20 @@ mqtt_client.connect()
 ###import busio
 
 import adafruit_ds3231
+#import socket
+#import time
 
+import adafruit_ntp
+#from datetime import timedelta
+
+
+# Don't use tz_offset kwarg with CPython because it will adjust automatically.
+ntp = adafruit_ntp.NTP(socket,tz_offset = 2 )
+print(ntp.datetime)
+    
 i2c = busio.I2C(board.GP21, board.GP20)
 rtc = adafruit_ds3231.DS3231(i2c)
-
+rtc.datetime = ntp.datetime #+ timedelta(hours=2)
 # Lookup table for names of days (nicer printing).
 days = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
 
@@ -195,6 +205,7 @@ days = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sun
 
 # Main loop:
 #while True:
+global mytime
 mytime = rtc.datetime
 
 def c_31_writeRTCtime(hour,minu,year,month,day):
@@ -538,15 +549,18 @@ import displayio
 import adafruit_displayio_ssd1306
 import microcontroller
 # Create the I2C interface.
+use_oled = True
 try:
     i2cdisplay = busio.I2C(board.GP19, board.GP18)
 except:
     #microcontroller.reset()
     print('i2c display geblock')
-    
-enabledisplay_pin = digitalio.DigitalInOut(board.GP16)
-enabledisplay_pin.direction = digitalio.Direction.OUTPUT
-enabledisplay_pin.value = 1
+    use_oled = False
+
+if use_oled == True:
+    enabledisplay_pin = digitalio.DigitalInOut(board.GP16)
+    enabledisplay_pin.direction = digitalio.Direction.OUTPUT
+    enabledisplay_pin.value = 1
 # Create the SSD
 # Create the SSD1306 OLED class.
 # The first two parameters are the pixel width and pixel height.  Change these
@@ -554,33 +568,33 @@ enabledisplay_pin.value = 1
 # The I2C address for these displays is 0x3d or 0x3c, change to match
 # A reset line may be required if there is no auto-reset circuitry
 #display = adafruit_ssd1306.SSD1306_I2C(128, 32, i2c, addr=0x3C, reset=led)
-display_bus = displayio.I2CDisplay(i2cdisplay,device_address=0x3c)
+    display_bus = displayio.I2CDisplay(i2cdisplay,device_address=0x3c)
 #display = adafruit_ssd1306.SSD1306_I2C(128, 32, display_bus)
-display = adafruit_displayio_ssd1306.SSD1306(display_bus, width=64, height=128)
+    display = adafruit_displayio_ssd1306.SSD1306(display_bus, width=64, height=128)
 # try uncommenting different font files if you like
 #font_file = "/fonts/LeagueSpartan-Bold-16.bdf"
 #font_file = "fonts/crevice100.bdf"
-font_file24 = "fonts/Junction-regular-24.bdf"
-font_file48 = "fonts/Junction-regular-24.bdf"
+    font_file24 = "fonts/Junction-regular-24.bdf"
+    font_file48 = "fonts/Junction-regular-24.bdf"
 # Set text, font, and color
-text = "1"
-font = bitmap_font.load_font(font_file24)
-color = 0xFFFFFF
+    text = "1"
+    font = bitmap_font.load_font(font_file24)
+    color = 0xFFFFFF
 
 # Create the tet label
-text_area = label.Label(font, text=text, color=color)
+    text_area = label.Label(font, text=text, color=color)
 
 # Set the location
-text_area.x = 0
-text_area.y = 20
+    text_area.x = 0
+    text_area.y = 20
 
 # Show it
-display.rotation=1
-display.show(text_area)
-time.sleep(1)
+    display.rotation=2
+    display.show(text_area)
+    time.sleep(1)
 #text_area.text = "2"
 #time.sleep(1)
-text_area.text = "Startup"
+    text_area.text = "Startup"
 #time.sleep(2)
 #i2c.deinit()
 #time.sleep(2)
@@ -645,7 +659,7 @@ mp3 = audiomp3.MP3Decoder(open("/sd/014_32kbps_fs24kHz_mono.mp3", "rb"))
 audio.play(mp3)
 #while audio.playing:
 #    pass
-time.sleep(1)
+time.sleep(0.2)
 audio.stop()
 mp3=0
 #print("Done playing!")
@@ -736,13 +750,12 @@ import struct
 import adafruit_pixelbuf
 from rp2pio import StateMachine
 from adafruit_pioasm import Program
-#from adafruit_led_animation.animation.rainbowcomet import RainbowComet
+from adafruit_led_animation.animation.rainbowcomet import RainbowComet
 #from adafruit_led_animation.animation.rainbowsparkle import RainbowSparkle
 #from adafruit_led_animation.animation.sparklepulse import SparklePulse
 #from adafruit_led_animation.animation.sparkle import Sparkle
 #from adafruit_led_animation.color import AMBER
-
-#from adafruit_led_animation.sequence import AnimationSequence
+from adafruit_led_animation.sequence import AnimationSequence
 
 ###import time
 
@@ -785,7 +798,7 @@ wait_reset:
 )
 
 ###minbright= 0.008
-setbright= 0.02
+setbright= 0.05
 
 class NeoPixelBackground(  # pylint: disable=too-few-public-methods
     adafruit_pixelbuf.PixelBuf
@@ -859,7 +872,10 @@ import rainbowio
 import supervisor
 
 NEOPIXEL = board.GP22 #NEOPIXEL
+
+global NUM_PIXELS_inner
 NUM_PIXELS_inner = 96
+global pixels_inner
 pixels_inner = NeoPixelBackground(NEOPIXEL, NUM_PIXELS_inner)
    # while True:
    
@@ -1133,31 +1149,40 @@ def c20_drawText(x,y,mytext,color):
     ###pixel_framebuf.text(mytext,x,y,int(color,16))
     
 def c_30_updateInnerTime():
-    global mytime
+    global rtc
     global pixels_inner
-    global NUM_PIXELS_inner
+    #global NUM_PIXELS_inner ##no need because just reading
     maxbrightnessbackground= 0.05 #
-    h=mytime.tm_hour
-    m=mytime.tm_min
+    minbright = 0.008
+    mytime = rtc.datetime
+    hour=mytime.tm_hour
+    minu=mytime.tm_min
     #mytime.tm_sec
-    if not(pixels_inner.brightness == minbright):
-                #pixels.auto_write=False
-        pixels_inner.fill(rainbowio.colorwheel(supervisor.ticks_ms() // 4))
-        for cntb in range(NUM_PIXELS_inner):
-            r = round(pixels_inner[cntb][0]* maxbrightnessbackground,0)
-            g = round(pixels_inner[cntb][1]* maxbrightnessbackground,0)
-            b = round(pixels_inner[cntb][2]* maxbrightnessbackground,0)
-            pixels_inner[cntb]=(r,g,b)
-            #pixels_inner.auto_write=True    
-    else:
-        pixels_inner.fill(0)
+    #if not(pixels_inner.brightness == minbright):
+    #            #pixels.auto_write=False
+    #    pixels_inner.fill(rainbowio.colorwheel(supervisor.ticks_ms() // 4))
+    #    for cntb in range(NUM_PIXELS_inner):
+    #        r = round(pixels_inner[cntb][0]* maxbrightnessbackground,0)
+    #        g = round(pixels_inner[cntb][1]* maxbrightnessbackground,0)
+    #        b = round(pixels_inner[cntb][2]* maxbrightnessbackground,0)
+    #        pixels_inner[cntb]=(r,g,b)
+    #        #pixels_inner.auto_write=True    
+    #else:
+    #    pixels_inner.fill(0)
     #sparkle.draw()
 
     #mycolor =(0,255,0)
+    pixels_inner.fill(0)
     mycolor=(255,255,255)
+    print('updating clock, min, hour')
+    print(minu)
+    print(hour)
+    if hour > 11:
+        hour = hour -12
+    print(hour)
     for cnt1 in hourarray[hour] :
         pixels_inner[cnt1]=mycolor
-    for cnt2 in minarray[miniute]:
+    for cnt2 in minarray[minu]:
         pixels_inner[cnt2]=mycolor
     
     #
@@ -1170,6 +1195,35 @@ def c_30_updateInnerTime():
 
 
             
+#--------------------------------
+#import time
+#import board
+#import neopixel
+
+# Update to match the pin connected to your NeoPixels
+pixel_pin_outer = board.GP15
+# Update to match the number of NeoPixels you have connected
+pixel_num_outer = 32
+brightness_outer= 0.09
+pixels_outer = neopixel.NeoPixel(pixel_pin_outer, pixel_num_outer, brightness=brightness_outer, auto_write=True, pixel_order="GRBW")
+
+#R, G, B, W
+
+pixels_outer.fill((0,0,0,0))
+time.sleep(1)
+pixels_outer.fill((255,0,0,0))
+time.sleep(0.5)
+pixels_outer.fill((0,255,0,0))
+time.sleep(0.5)
+pixels_outer.fill((0,0,255,0))
+time.sleep(0.5)
+pixels_outer.fill((0,0,0,255))
+time.sleep(0.5)
+pixels_outer.fill((255,255,255,0))
+time.sleep(1)
+
+pixels_outer.fill((0,0,0,0))
+     
 #--------------------------------
 
 
@@ -1358,9 +1412,27 @@ def message(client, topic, message):
         c_31_writeRTCtime(hour,minu,year,month,day)
 
 # -------------------------------- INIT
-# Clear display 
+# from adafruit_led_animation.helper import PixelMap
+#pixels = neopixel.NeoPixel(board.D6, 32, auto_write=False)##
+#
+#pixel_wing_vertical = PixelMap(pixels, [
+ #   (0, 8, 16, 24),
+ #   (1, 9, 17, 25),
+ #   (2, 10, 18, 26),
+ #   (3, 11, 19, 27),
+ #   (4, 12, 20, 28),
+ #   (5, 13, 21, 29),
+ #   (6, 14, 22, 30),
+ #   (7, 15, 23, 31),
+#], individual_pixels=True)
+#
+#pixel_wing_vertical[0] = (255, 255, 0)
+#pixel_wing_vertical.show()
+#
+# Clear display
 pixels_inner.fill(0)
-text_area.text = " "
+if use_oled == True:
+    text_area.text = " "
 
 # Setup the callback methods above
 mqtt_client.on_connect = connected
@@ -1371,23 +1443,51 @@ mqtt_client.on_message = message
 print("Connecting to MQTT...")
 mqtt_client.connect()
 
-mytick=0
+mytick=0.0
 perform_main_loop = True
+
+c_30_updateInnerTime()
+mytime = rtc.datetime
+mytick =mytime.tm_sec
+rainbow_comet = RainbowComet(pixels_outer, speed=0.01, tail_length=31, bounce=True)
+#animations = AnimationSequence(rainbow_comet,advance_interval=2,auto_clear=True)
+#print('animation start')
+#animations.animate()
+#print('animation done')
+main_loop_time = 0.0001
 while perform_main_loop == True:
-    if use_watchdog == True:
-        w.feed()
-        
-    mytick=mytick+1
-    if mytick > 60:
-        mytick=mytime.tm_sec
-    elif mytick == 0:
+    rainbow_comet.animate()
+    mytick=mytick+main_loop_time
+    #print(mytick)
+    if mytick >59:
+        mytick = 0
+        print('Update clock')
         c_30_updateInnerTime()
+        mytime = rtc.datetime
+        mytick = mytime.tm_sec
+        print('retick')
+        print(mytick)
+    #if (mytick % 10 == 0) and mytick < 31:
+        #mytime = rtc.datetime
+    toggle_comet= True
+    if mytick % 3 == 0:
+        print('check mqtt')
+        try:
+            mqtt_client.loop()
+        except Exception as err:
+            print('mqtt schrott: %s' % str(err))
+
+        #if toggle_comet == True:
+        #    toggle_comet = False
+        #else:
+        #    toggle_comet = True
+            #animations.animate()
+        #rainbow_comet.animate()
+        
+        if use_watchdog == True:
+            w.feed()
     #- Module 1
     # Poll the message queue
-    try:
-        mqtt_client.loop()
-    except Exception as err:
-        print('mqtt schrott: %s' % str(err))
 
     if use_gesture == True:
         gesture = sensor.gesture()
@@ -1427,8 +1527,8 @@ while perform_main_loop == True:
     # photocell_val += 1
     
     
-    time.sleep(0.1)
-    perform_main_loop = False
+    time.sleep(main_loop_time)
+    #perform_main_loop = False
 print("Done!")
 
 
