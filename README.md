@@ -27,8 +27,8 @@ SW used:
 
 SW controls class
 - tbd (Ideo include everything which interacts between async-tasks
-#        self.luxbrigtness = 0.0 # read value by sensor
-#        self.luxautomaticclock = False # switch if clock bright is auto
-#        self.luxautomaticmiddleneo = False # switch for middle neopixel
-#        self.neomode = 1 # 1= constant
-#        self.neocolor = (255,0,0,0)
+-        self.luxbrigtness = 0.0 # read value by sensor
+ -       self.luxautomaticclock = False # switch if clock bright is auto
+  -      self.luxautomaticmiddleneo = False # switch for middle neopixel
+   -     self.neomode = 1 # 1= constant
+    -    self.neocolor = (255,0,0,0)
