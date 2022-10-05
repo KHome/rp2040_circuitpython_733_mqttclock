@@ -16,8 +16,19 @@ HW used:
 - Neopixel WS2811 (RP2040 PIO driven)
 - 5V Main Power Supply 
 
-SW used:
-- Circuitpython 7.3.3
-
 MD used:
 - Thingiverse: [HexMatrix Slim](https://www.thingiverse.com/thing:4848896)
+
+FIrmware used:
+- Circuitpython 7.3.3
+
+SW used:
+- Asyncio control of main loop
+
+SW controls class
+- tbd (Ideo include everything which interacts between async-tasks
+        self.luxbrigtness = 0.0 # read value by sensor
+        self.luxautomaticclock = False # switch if clock bright is auto
+        self.luxautomaticmiddleneo = False # switch for middle neopixel
+        self.neomode = 1 # 1= constant
+        self.neocolor = (255,0,0,0)
