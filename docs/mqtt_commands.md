@@ -70,5 +70,5 @@
 - Sets controls.house_is_night 
 - Set Clock background mode to black
 - Set Clock foreground to green
-- 
+- Set Display-7-Seg to Alarm and don't rotate
 
