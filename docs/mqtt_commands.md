@@ -39,6 +39,11 @@
 - Shows alarmtime in Display-7-seg
 - TBD: Sets RTC Alarm2
 
+## 18, Display-7-Segment Mode update
+(command,newmode,enableautomatic) = struct.unpack('bBb',message)
+- Sets the Display mode = Content
+- Set, if complete content will be changed / rotated over time
+
 ## 21, Display-7-Segment Brightness control
 (command21,brightness1,enableautomatic) = struct.unpack('bBb',message)
 - Set Brightness or
