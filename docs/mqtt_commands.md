@@ -51,4 +51,13 @@
 - 1=fast=HT16K33_BLINK_2HZ       = 2 Hz blink
 - 2=mid=HT16K33_BLINK_1HZ       = 1 Hz blink
 - 3=slow=HT16K33_BLINK_HALFHZ    = 0.5 Hz blink
-            
+
+## 23, Audio Sound Stop
+(command) = struct.unpack('b',message)
+- Stops Audio play
+
+## 30, Show Clock
+(command) = struct.unpack('b',message)
+- Show Clock "refresh"
+
+
