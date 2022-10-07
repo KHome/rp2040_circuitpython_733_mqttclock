@@ -65,4 +65,10 @@
 (command) = struct.unpack('b',message)
 - Show Clock "refresh"
 
+## 40, Home-Status - Is Night
+(command) = struct.unpack('b',message)
+- Sets controls.house_is_night 
+- Set Clock background mode to black
+- Set Clock foreground to green
+- 
 
