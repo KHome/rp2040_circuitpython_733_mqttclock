@@ -73,3 +73,41 @@
 - Set Clock foreground to green
 - Set Display-7-Seg to Alarm and don't rotate
 
+## 50, NeopixelStrips: Mode
+(command_change,position,modevalue)=struct.unpack('bbb',message)
+- Position = 0 is all at one time, and 1,2,3,4 are for each
+- Mode: 0=off, 1=constant, 2=rainbow 3=special
+
+## 51, NeopixelStrips: Brightness
+(command_change,position, x,x2)=struct.unpack('bbbb',message)
+- Position = 0 is all at one time, and 1,2,3,4 are for each
+- x,x2 = a value for up to 256 = int(x << 8) + int(x2)    
+- A brightness from 0-up to 255
+
+## 52, NeopixelStrips - Rainbow Effect (Mode =2) Speed
+(command_change,position, x,x2)=struct.unpack('bbbb',message)
+- Position = 0 is all at one time, and 1,2,3,4 are for each
+- x,x2 = int(x << 8) + int(x2)
+- Süeed via = float(newval / (256/4))
+
+## 53, NeopixelStrips - Rainbow Effect (Mode=2) Size
+(command_change,position, x,x2)=struct.unpack('bbbb',message)
+- Position = 0 is all at one time, and 1,2,3,4 are for each
+- x,x2 = int(x << 8) + int(x2)
+- Size of equal Neopixel
+
+## 54, NeopixelStrips - Rainbow Effect (Mode=2) Spacing
+(command_change,position, x,x2)=struct.unpack('bbbb',message)
+- Position = 0 is all at one time, and 1,2,3,4 are for each
+- x,x2 = int(x << 8) + int(x2)
+- Spacing in Pixel, which keep Black
+
+## 55, NeopixelStrips - Constant (Mode =1)
+(command_show_fill,position,red_fill,green_fill,blue_fill,white_fill) = struct.unpack('bbBBBB',message)
+- Position = 0 is all at one time, and 1,2,3,4 are for each
+- x_fill = from 0..127 (will be muplitplied by two
+- For position 4 it's only RGB, otherwise RGBW
+      
+      
+        
+       
