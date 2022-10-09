@@ -34,7 +34,8 @@
 - Set Automatic Brightness control via Lux-sensor
 
 ## 17, Display-7-Segment Alarm update
-(command_change_17,ascii1,ascii2,ascii3,ascii4) = struct.unpack('bbbbb',message)
+(command_change_17,ascii1,ascii2,ascii3,ascii4, activate) = struct.unpack('bbbbb',message)
+- Bool to activate or deactive output
 - Sets alarmtime for next 24h
 - Shows alarmtime in Display-7-seg
 - TBD: Sets RTC Alarm2
