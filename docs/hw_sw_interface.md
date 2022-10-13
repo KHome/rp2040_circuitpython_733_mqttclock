@@ -51,8 +51,13 @@ pixel_pin_eo = board.GP18
 
 ## Neopixel East Outer
 pixel =
-- GP? = Neopixel RGB
+- GP16 = Neopixel RGB
 
 ## Neopixel East Table
 pixel_pin_et = board.GP19
 - GP19 = Neopixel RGB
+
+# NOT USED (Since not further SPI available)
+   OLED SD1309
+   i2c = busio.I2C(board.GP19, board.GP18) 
+   led = digitalio.DigitalInOut(board.GP16)
