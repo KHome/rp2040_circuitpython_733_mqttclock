@@ -35,29 +35,30 @@ cs=board.GP5
 # Neopixels
 ## Neopixel Clock in Hexagon
 NEOPIXEL = board.GP22
-- GP22 = Neopixel RGB (Pico RP2040, Statemachine Driven)
+- GP22 (direct connecter) = Neopixel RGB (Pico RP2040, Statemachine Driven)
 
 ## Neopixel South Inner
 pixel_pin_si = board.GP15
-- GP15 = Neopixel RGBW
+- GP15 (green cable) = Neopixel RGBW
 
 ## Neopixel South Outer
 pixel_pin_so = board.GP14
-- GP14 = Neopixel RGBW
+- GP14 (white cable) = Neopixel RGBW
 
 ## Neopxiel East Top
 pixel_pin_eo = board.GP18
-- GP18 = Neopixel RGBW
+- GP18 (orange marker) = Neopixel RGBW
 
 ## Neopixel East Outer
 pixel =
-- GP16 = Neopixel RGB
+- GP16 (green marker) = Neopixel RGB
 
 ## Neopixel East Table
 pixel_pin_et = board.GP19
-- GP19 = Neopixel RGB
+- GP19 (yellow marker) = Neopixel RGB
 
 # NOT USED (Since not further SPI available)
    OLED SD1309
    i2c = busio.I2C(board.GP19, board.GP18) 
    led = digitalio.DigitalInOut(board.GP16)
+   i2c = busio.I2C(board.SCL, board.SDA)
